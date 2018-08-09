@@ -1,11 +1,10 @@
 package br.com.caelum.ingresso.validacao;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 import java.util.List;
 
 import br.com.caelum.ingresso.model.Sessao;
+
 
 public class GerenciadorDeSessao {
 
@@ -15,30 +14,18 @@ public class GerenciadorDeSessao {
 		this.sessoesDaSala = sessoesDaSala;
 	}
 
-	private boolean horarioIsConflitante (Sessao sessaoExistente , Sessao sessaoNova ){
+	private static boolean isConflitante(Sessao sessaoNova, Sessao sessaoExistente){
+		boolean novaTerminaAntesDaExistente = sessaoNova.getHorarioTermino().isBefore(sessaoExistente.getHorario());
+		boolean novaComecaDepoisDaExistente = sessaoNova.getHorario().isAfter(sessaoExistente.getHorarioTermino());
 		
-		LocalDate hoje = LocalDate.now();
-	
-		LocalDateTime  horarioSessaoExistente = sessaoExistente.getHorario().atDate(hoje);
-		LocalDateTime  horarioSessaoNova = sessaoNova.getHorario().atDate(hoje);
-		
-		//mari
-		LocalTime horarioExistente = null;
-		
-		boolean terminaAntes = sessaoNova.getHorarioTermino().isBefore(horarioExistente);
-		// mari
-		LocalTime horarioNova = null;
-		boolean comecaDepois = sessaoExistente.getHorarioTermino().isBefore(horarioNova);
-		
-		if ( terminaAntes || comecaDepois){
+		if(novaTerminaAntesDaExistente || novaComecaDepoisDaExistente){
 			return false;
 		}
-		return true;
 		
+		return true;
 	}
-
+	
 	public boolean cabe(Sessao sessaoNova) {
-		return sessoesDaSala.stream().noneMatch(sessaoExistente -> horarioIsConflitante(sessaoExistente, sessaoNova));
-
+		return sessoesDaSala.stream().noneMatch(sessaoExistente -> isConflitante(sessaoNova, sessaoExistente));
 	}
 }

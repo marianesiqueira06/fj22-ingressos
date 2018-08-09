@@ -2,8 +2,10 @@ package br.com.caelum.ingresso.controller;
 
 import br.com.caelum.ingresso.dao.FilmeDao;
 import br.com.caelum.ingresso.dao.SessaoDao;
+import br.com.caelum.ingresso.model.DetalhesDoFilme;
 import br.com.caelum.ingresso.model.Filme;
 import br.com.caelum.ingresso.model.Sessao;
+import br.com.caelum.ingresso.rest.ImdbClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class FilmeController {
 	@Autowired
 	private SessaoDao sessaoDao;
 
+	@Autowired
+	private ImdbClient client;
+
 	@GetMapping({ "/admin/filme", "/admin/filme/{id}" })
 	public ModelAndView form(@PathVariable("id") Optional<Integer> id, Filme filme) {
 
@@ -39,7 +44,6 @@ public class FilmeController {
 		}
 
 		modelAndView.addObject("filme", filme);
-
 		return modelAndView;
 	}
 
@@ -50,11 +54,8 @@ public class FilmeController {
 		if (result.hasErrors()) {
 			return form(Optional.ofNullable(filme.getId()), filme);
 		}
-
 		filmeDao.save(filme);
-
 		ModelAndView view = new ModelAndView("redirect:/admin/filmes");
-
 		return view;
 	}
 
@@ -87,7 +88,9 @@ public class FilmeController {
 		ModelAndView modelAndView = new ModelAndView("/filme/detalhe");
 		Filme filme = filmeDao.findOne(id);
 		List<Sessao> sessoes = sessaoDao.buscaSessoesDoFilme(filme);
+		Optional<DetalhesDoFilme> detalhesDoFilme = client.request(filme, DetalhesDoFilme.class);
 		modelAndView.addObject("sessoes", sessoes);
+		modelAndView.addObject("detalhes", detalhesDoFilme.orElse(new DetalhesDoFilme()));
 		return modelAndView;
 	}
 

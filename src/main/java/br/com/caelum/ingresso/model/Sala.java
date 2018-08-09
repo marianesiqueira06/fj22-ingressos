@@ -27,12 +27,12 @@ public class Sala {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Lugar> lugares = new ArrayList<>();
 
-    /**
-     * @deprecated hibernate only
+    /** 
+     * @deprecated hibernate only 
      */
     public Sala() {
 
-    }
+    } 
 
     public Sala(String nome, BigDecimal preco) {
         this.nome = nome;
