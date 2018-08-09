@@ -6,10 +6,10 @@ import br.com.caelum.ingresso.model.descontos.Desconto;
 
 public class TipoDeIngresso {
 
-	INTEIRO(new	SemDesconto();
+	/*INTEIRO(new	SemDesconto();
 	ESTUDANTE(new	DescontoParaEstudantes());
 	BANCO(new	DescontoParaBancos());
-
+*/
 	private final Desconto desconto;
 
 	TipoDeIngresso(Desconto desconto) {
